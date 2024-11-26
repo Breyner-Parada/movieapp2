@@ -1,74 +1,45 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator } from "react-native";
+import React, { useEffect } from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import { getDiscoverMovies } from "@/api";
+import { SliderProps } from "@/types";
+import Slider from "@/components/Slider";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 
-export default function HomeScreen() {
+const Home = () => {
+  const [discoverMovies, setDiscoverMovies] = React.useState<SliderProps>();
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    getDiscoverMovies().then((data) => {
+      data.results.splice(1, data.results.length - 7);
+      setDiscoverMovies(data);
+      setIsLoading(false);
+    });
+  }, []);
+
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
-}
+    <ScrollView className="">
+      <LinearGradient
+        colors={["rgba(7,4,32,1)", "rgba(8,6,32,1)"]}
+        className="absolute inset-0 w-full h-full"
+      />
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+      {isLoading ? (
+        <View className="flex-1 items-center mt-5">
+          <ActivityIndicator size="large" color="#ffff" />
+        </View>
+      ) : (
+        <Slider movies={discoverMovies?.results || []} />
+      )}
+
+      <View className="px-5">
+        <Text className="text-white text-2xl font-bold mt-5">Popular Movies</Text>
+      </View>
+    </ScrollView>
+  );
+};
+
+export default Home;

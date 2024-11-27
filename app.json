@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "exampleApp",
+    "name": "MoviesRoom",
     "slug": "exampleApp",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,7 +13,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/playstore-icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.libritania.exampleApp"
